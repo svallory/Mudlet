@@ -3206,8 +3206,26 @@ int TLuaInterpreter::setMapWindowTitle(lua_State* L)
 
 int TLuaInterpreter::getMudletInfo(lua_State* L)
 {
-    Host& host = getHostFromLua(L);
+    QString option;
 
+    Host& host = getHostFromLua(L);
+    if (lua_gettop(L) > 0) {
+        option = getVerifiedString(L, __func__, 1, "option", true);
+    }
+
+    auto [currentEncoding, knownEncodings] = getAvailableEncodings(host);
+    host.postMessage(QStringLiteral("[ INFO ]  - Current encoding: %1").arg(currentEncoding));
+
+    host.postMessage(QStringLiteral("[ INFO ]  - Available encodings:"));
+    host.postMessage(QStringLiteral("  %1").arg(knownEncodings.join(QStringLiteral(", "))));
+
+    host.mpConsole->showStatistics();
+
+    return 0;
+}
+
+std::pair<QString, QStringList> TLuaInterpreter::getAvailableEncodings(Host &host)
+{
     QStringList knownEncodings{"ASCII"};
     // cTelnet::getEncoding() returns a QByteArray NOT a QString:
     QString currentEncoding{host.mTelnet.getEncoding()};
@@ -3236,12 +3254,7 @@ int TLuaInterpreter::getMudletInfo(lua_State* L)
         }
     }
 
-    host.postMessage(QStringLiteral("[ INFO ]  - Current encoding: %1").arg(currentEncoding));
-
-    host.postMessage(QStringLiteral("[ INFO ]  - Available encodings:"));
-    host.postMessage(QStringLiteral("  %1").arg(knownEncodings.join(QStringLiteral(", "))));
-
-    return 0;
+    return {currentEncoding, knownEncodings};
 }
 
 // Documentation: https://wiki.mudlet.org/w/Manual:Lua_Functions#createMiniConsole

@@ -664,6 +664,7 @@ private:
     void insertNativeSeparatorsFunction(lua_State* L);
     static void pushMapLabelPropertiesToLua(lua_State* L, const TMapLabel& label);
     static std::pair<int, TAction*> getTActionFromIdOrName(lua_State*, const int, const char*);
+    static std::pair<QString, QStringList> getAvailableEncodings(Host& host);
 
     const int LUA_FUNCTION_MAX_ARGS = 50;
 

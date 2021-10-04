@@ -1768,6 +1768,8 @@ void TConsole::slot_stop_all_triggers(bool b)
     }
 }
 
+// TODO: move this method to TMainConsole, as it's only relevant for the main console
+// https://github.com/Mudlet/Mudlet/issues/5484
 void TConsole::showStatistics()
 {
     QStringList header;
