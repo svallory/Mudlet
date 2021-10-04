@@ -3214,12 +3214,25 @@ int TLuaInterpreter::getMudletInfo(lua_State* L)
     }
 
     auto [currentEncoding, knownEncodings] = getAvailableEncodings(host);
-    host.postMessage(QStringLiteral("[ INFO ]  - Current encoding: %1").arg(currentEncoding));
 
-    host.postMessage(QStringLiteral("[ INFO ]  - Available encodings:"));
-    host.postMessage(QStringLiteral("  %1").arg(knownEncodings.join(QStringLiteral(", "))));
+    if (option.isEmpty() || option.compare(QStringLiteral("print"), Qt::CaseInsensitive) == 0) {
+        host.postMessage(QStringLiteral("[ INFO ]  - Current encoding: %1").arg(currentEncoding));
 
-    host.mpConsole->showStatistics();
+        host.postMessage(QStringLiteral("[ INFO ]  - Available encodings:"));
+        host.postMessage(QStringLiteral("  %1").arg(knownEncodings.join(QStringLiteral(", "))));
+
+        host.mpConsole->showStatistics();
+        return 0;
+    } else if (option.compare(QStringLiteral("return"), Qt::CaseInsensitive) == 0) {
+        lua_newtable(L);
+        lua_pushstring(L, currentEncoding.toUtf8().constData());
+        lua_setfield(L, -2, "currentEncoding");
+        lua_pushstring(L, knownEncodings.join(QStringLiteral(", ")).toUtf8().constData());
+        lua_setfield(L, -2, "availableEncodings");
+        return 1;
+    } else {
+        // TODO handle error
+    }
 
     return 0;
 }
@@ -3248,7 +3261,7 @@ std::pair<QString, QStringList> TLuaInterpreter::getAvailableEncodings(Host &hos
         std::sort(knownEncodings.begin(), knownEncodings.end(), sorter);
 
         if (currentEncoding.isEmpty()) {
-            currentEncoding = QStringLiteral("\"ASCII\"");
+            currentEncoding = QStringLiteral("ASCII");
         } else {
             currentEncoding = adjustEncoding(currentEncoding);
         }
