@@ -16,7 +16,7 @@ image: Visual Studio 2019
 
 environment:
   signing_password:
-    secure: gOKqBtIvfDuGkEeaHGaguMmafynYAG06iVuD6Krem7M=
+    secure: JJDxNdreMgNn/IOcY+UVmlaqgDT4a7vcxsY3nfcgWY4=
   DEPLOY_KEY_PASS:
     secure: 81sr0SJzuWG+mgH3X6fJTh4rfX5/O1qa3MsItNvFukQ=
   DEPLOY_PATH:
@@ -54,7 +54,7 @@ build_script:
 - C:\msys64\usr\bin\sh.exe -c C:\\projects\\mudlet\\CI\\appveyor.build.sh
 
 on_failure:
-# This is likely to only work fro the Original build process:
+# This is likely to only work for the Original build process:
 - cd C:\src
 - powershell "Push-AppveyorArtifact ./verbose_output.log"
 - echo "Build failed - see verbose_output.log artifact upload for more information."
