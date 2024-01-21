@@ -9,9 +9,14 @@ jobs:
     runs-on: ubuntu-latest
 
     # Ensure this job only runs for branches matching the desired pattern
-    if: startsWith(github.ref_name, 'release-')
+    # if: startsWith(github.ref_name, 'release-')
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+
       - name: Create Pull Request
         uses: repo-sync/pull-request@v2
         with:
